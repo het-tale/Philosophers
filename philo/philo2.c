@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 20:49:46 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/10 20:26:50 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/09 12:19:21 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ t_args	init_args(int argc, char *argv[])
 	args.time_to_sleep = ft_atoi(argv[4]);
 	args.forks_mutex = malloc(sizeof(pthread_mutex_t) * args.philo_number);
 	args.philo = malloc(sizeof(t_philo) * args.philo_number);
-	args.end_sim = 0;
 	if (argc == 6)
 		args.number_of_times = ft_atoi(argv[5]);
 	return (args);
@@ -57,24 +56,6 @@ t_philo	*init_philo(t_args args)
 	return (philo);
 }
 
-int	end_simulation(t_args args)
-{
-	time_t	time;
-
-	time = get_time();
-    if (time - args.philo[args.id].lastmeal >= args.time_to_die)
-	{
-		pthread_mutex_lock(&args.end_mutex);
-		args.end_sim = 1;
-		pthread_mutex_unlock(&args.end_mutex);
-		pthread_mutex_lock(&args.msg_mutex);
-    	printf("%ld %d died\n", time, args.philo[args.id].philo_id);
-    	pthread_mutex_unlock(&args.msg_mutex);
-		return (1);
-	}
-	return (0);
-}
-
 int	main(int argc, char *argv[])
 {
 	t_args		args;
@@ -89,39 +70,29 @@ int	main(int argc, char *argv[])
 			return (0);
 		args.philo = init_philo(args);
 		tid = malloc(sizeof(pthread_t) * args.philo_number);
-		pthread_mutex_init(&args.msg_mutex, NULL);
-		pthread_mutex_init(&args.philo[args.id].lastmeal_mutex, NULL);
-		pthread_mutex_init(&args.end_mutex, NULL);
-		i = 0;
 		while (i < args.philo_number)
 		{
-			pthread_mutex_init(&args.forks_mutex[args.philo[i].left_i], NULL);
-			pthread_mutex_init(&args.forks_mutex[args.philo[i].right_i], NULL);
+			pthread_mutex_init(&args.philo->forks[args.philo->left_i], NULL);
+			pthread_mutex_init(&args.philo->forks[args.philo->right_i], NULL);
 			i++;
 		}
 		i = 0;
 		while (i < args.philo_number)
 		{
-			args.id = i;
 			pthread_create(&tid[i], NULL, routine, &args);
 			i++;
 		}
 		i = 0;
 		while (i < args.philo_number)
 		{
-			args.id = i;
-			if (end_simulation(args) == 1)
-				return(0);
+			pthread_mutex_destroy(&args.philo->forks[args.philo->left_i]);
+			pthread_mutex_destroy(&args.philo->forks[args.philo->right_i]);
 			i++;
 		}
-		pthread_mutex_destroy(&args.msg_mutex);
-		pthread_mutex_destroy(&args.philo[args.id].lastmeal_mutex);
-		pthread_mutex_destroy(&args.end_mutex);
 		i = 0;
 		while (i < args.philo_number)
 		{
-			pthread_mutex_destroy(&args.forks_mutex[args.philo[i].left_i]);
-			pthread_mutex_destroy(&args.forks_mutex[args.philo[i].right_i]);
+			pthread_join(tid[i], NULL);
 			i++;
 		}
 	}
