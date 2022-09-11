@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 19:29:15 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/11 12:45:22 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/11 15:38:24 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,12 +62,8 @@ void	eat_routine(t_args args)
 	time_t	time;
 
 	time = get_time();
-	if (args.philo[args.id].philo_id % 2 == 0)
-		usleep(1000);
 	pthread_mutex_lock(&args.forks_mutex[args.philo[args.id].left_i]);
 	print_msg(args, "fork", time);
-	if (args.philo[args.id].philo_id % 2 == 0)
-		usleep(1000);
 	pthread_mutex_lock(&args.forks_mutex[args.philo[args.id].right_i]);
 	print_msg(args, "fork", time);
 	print_msg(args, "eat", time);

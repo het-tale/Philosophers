@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 20:50:21 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/11 13:19:24 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/11 15:41:13 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ struct s_args
 	int				number_of_times;
 	int				id;
 	pthread_mutex_t	*forks_mutex;
+	int				*used_forks;
 	t_philo			*philo;
 	pthread_mutex_t	msg_mutex;
 	pthread_mutex_t	end_mutex;
@@ -53,29 +54,3 @@ void	*routine(void *data);
 time_t	get_time(void);
 void	print_msg(t_args args, char *str, time_t time);
 #endif
-
-/*
-# create n threads
-{
-	i = get thread id;
-
-	if i % 2 == 0:  //avoid deadlock
-		usleep(100); 
-	while (1)
-	{
-		synch data //mutexes
-		eat
-		sleep
-		think
-	}
-}
-while (i < n) //main thread
-	symch data 
-	if philo[i]->died:
-		mutex_end_of_simulation //global mutex initiated before thread creation
-		print(i died);
-		return 1;
-	
-#join n threads
-
-*/

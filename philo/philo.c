@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 20:49:46 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/11 13:18:54 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/11 15:40:17 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 t_args	init_args(int argc, char *argv[])
 {
 	t_args	args;
+	int		i;
 
 	args.philo_number = ft_atoi(argv[1]);
 	args.time_to_die = ft_atoi(argv[2]);
@@ -23,6 +24,14 @@ t_args	init_args(int argc, char *argv[])
 	args.forks_mutex = malloc(sizeof(pthread_mutex_t) * args.philo_number);
 	args.philo = malloc(sizeof(t_philo) * args.philo_number);
 	args.end_sim = 0;
+	pthread_mutex_init(&args.msg_mutex, NULL);
+	pthread_mutex_init(&args.end_mutex, NULL);
+	i = 0;
+	while (i < args.philo_number)
+	{
+		pthread_mutex_init(&args.forks_mutex[i], NULL);
+		i++;
+	}
 	if (argc == 6)
 		args.number_of_times = ft_atoi(argv[5]);
 	return (args);
@@ -52,6 +61,8 @@ t_philo	*init_philo(t_args args)
 		philo[i].philo_id = i + 1;
 		philo[i].left_i = i;
 		philo[i].right_i = ((i + 1) % args.philo_number);
+		pthread_mutex_init(&philo[i].lastmeal_mutex, NULL);
+		philo[i].tid = 0;
 		i++;
 	}
 	return (philo);
@@ -61,7 +72,6 @@ int	main(int argc, char *argv[])
 {
 	t_args		args;
 	int			i;
-	pthread_t	*tid;
 
 	if (argc == 5 || argc == 6)
 	{
@@ -70,33 +80,17 @@ int	main(int argc, char *argv[])
 		if (!check_errors(args))
 			return (0);
 		args.philo = init_philo(args);
-		tid = malloc(sizeof(pthread_t) * args.philo_number);
-		pthread_mutex_init(&args.msg_mutex, NULL);
-		pthread_mutex_init(&args.end_mutex, NULL);
-		i = 0;
-		while (i < args.philo_number)
-		{
-			pthread_mutex_init(&args.philo[i].lastmeal_mutex, NULL);
-			i++;
-		}
-		i = 0;
-		while (i < args.philo_number)
-		{
-			pthread_mutex_init(&args.forks_mutex[args.philo[i].left_i], NULL);
-			pthread_mutex_init(&args.forks_mutex[args.philo[i].right_i], NULL);
-			i++;
-		}
 		i = 0;
 		while (i < args.philo_number)
 		{
 			args.id = i;
-			pthread_create(&tid[i], NULL, routine, &args);
+			pthread_create(&args.philo[i].tid, NULL, routine, &args);
 			i++;
 		}
 		i = 0;
 		while (i < args.philo_number)
 		{
-			pthread_join(tid[i], NULL);
+			pthread_join(args.philo[i].tid, NULL);
 			i++;
 		}
 	}
