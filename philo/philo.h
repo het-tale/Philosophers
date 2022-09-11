@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 20:50:21 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/10 19:33:34 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/11 13:19:24 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,21 +25,22 @@ typedef struct s_philo	t_philo;
 
 struct s_args
 {
-	int	philo_number;
-	int	time_to_die;
-	int	time_to_eat;
-	int	time_to_sleep;
-	int	number_of_times;
+	int				philo_number;
+	int				time_to_die;
+	int				time_to_eat;
+	int				time_to_sleep;
+	int				number_of_times;
 	int				id;
 	pthread_mutex_t	*forks_mutex;
-	t_philo	*philo;
+	t_philo			*philo;
 	pthread_mutex_t	msg_mutex;
 	pthread_mutex_t	end_mutex;
-	int	end_sim;
+	int				end_sim;
 };
 
 struct s_philo
 {
+	pthread_t		tid;
 	int				philo_id;
 	int				right_i;
 	int				left_i;
@@ -50,6 +51,7 @@ struct s_philo
 int		ft_atoi(const char *str);
 void	*routine(void *data);
 time_t	get_time(void);
+void	print_msg(t_args args, char *str, time_t time);
 #endif
 
 /*
