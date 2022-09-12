@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 19:29:15 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/12 16:51:41 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/12 17:39:29 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,12 @@ void    philo_sleep(int time_to)
 
 void	print_msg(char *str, t_philo philo)
 {
-	pthread_mutex_lock(&philo.args.msg_mutex);
-	printf("%ld %d %s\n", get_time(), (philo.philo_id + 1), str);
-	pthread_mutex_unlock(&philo.args.msg_mutex);
+	unsigned int	time;
+
+	time = get_time() - philo.args->start_time;
+	pthread_mutex_lock(&philo.args->msg_mutex);
+	printf("%u %d %s\n", time, (philo.philo_id), str);
+	pthread_mutex_unlock(&philo.args->msg_mutex);
 }
 
 void	pick_fork(t_philo philo)
@@ -60,7 +63,7 @@ void	eat_routine(t_philo philo)
 	print_msg("is eating", philo);
 	pthread_mutex_lock(&philo.lastmeal_mutex);
 	philo.is_eating = 1;
-	philo_sleep(philo.args.time_to_eat);
+	philo_sleep(philo.args->time_to_eat);
 	pthread_mutex_unlock(&philo.lastmeal_mutex);
 	philo.is_eating = 0;
 }
@@ -70,7 +73,7 @@ void	sleep_routine(t_philo philo)
 	print_msg("is sleeping", philo);
 	pthread_mutex_unlock(&philo.fork_mutex);
 	pthread_mutex_unlock(philo.next_fork_mutex);
-	philo_sleep(philo.args.time_to_sleep);
+	philo_sleep(philo.args->time_to_sleep);
 }
 
 void	*routine(void *data)

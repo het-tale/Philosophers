@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 20:50:21 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/12 16:29:47 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/12 17:04:45 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ struct s_philo
 	int				lastmeal;
 	int				ate_times;
 	int				is_eating;
-	t_args			args;
+	t_args			*args;
 	pthread_mutex_t	fork_mutex;
 	pthread_mutex_t	*next_fork_mutex;
 };
