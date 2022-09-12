@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 19:29:15 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/12 12:52:48 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/12 16:51:41 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,12 +47,9 @@ void	print_msg(char *str, t_philo philo)
 
 void	pick_fork(t_philo philo)
 {
-	int	index;
-
-	pthread_mutex_lock(&philo.args.forks_mutex[philo.philo_id]);
+	pthread_mutex_lock(&philo.fork_mutex);
 	print_msg("has taken a fork", philo);
-	index = (philo.philo_id + 1) % philo.args.philo_number;
-	pthread_mutex_lock(&philo.args.forks_mutex[index]);
+	pthread_mutex_lock(philo.next_fork_mutex);
 	print_msg("has taken a fork", philo);
 }
 
@@ -70,12 +67,9 @@ void	eat_routine(t_philo philo)
 
 void	sleep_routine(t_philo philo)
 {
-	int	index;
-
-	index = (philo.philo_id + 1) % philo.args.philo_number;
 	print_msg("is sleeping", philo);
-	pthread_mutex_unlock(&philo.args.forks_mutex[philo.philo_id]);
-	pthread_mutex_unlock(&philo.args.forks_mutex[index]);
+	pthread_mutex_unlock(&philo.fork_mutex);
+	pthread_mutex_unlock(philo.next_fork_mutex);
 	philo_sleep(philo.args.time_to_sleep);
 }
 
@@ -88,8 +82,6 @@ void	*routine(void *data)
 		usleep(100);
 	while (1)
 	{
-		// if (philo.args.number_of_times > 0 && philo.args.number_of_times == philo.ate_times)
-		// 	philo.args.end_sim++;
 		pick_fork(philo);
 		eat_routine(philo);
 		sleep_routine(philo);

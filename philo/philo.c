@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 20:49:46 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/12 12:52:22 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/12 16:51:26 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,22 +15,14 @@
 t_args	init_args(int argc, char *argv[])
 {
 	t_args	args;
-	int		i;
 
 	args.philo_number = ft_atoi(argv[1]);
 	args.time_to_die = ft_atoi(argv[2]);
 	args.time_to_eat = ft_atoi(argv[3]);
 	args.time_to_sleep = ft_atoi(argv[4]);
 	args.forks_mutex = malloc(sizeof(pthread_mutex_t) * args.philo_number);
-	//args.philo = malloc(sizeof(t_philo) * args.philo_number);
 	args.end_sim = 0;
 	pthread_mutex_init(&args.msg_mutex, NULL);
-	i = 0;
-	while (i < args.philo_number)
-	{
-		pthread_mutex_init(&args.forks_mutex[i], NULL);
-		i++;
-	}
 	if (argc == 6)
 		args.number_of_times = ft_atoi(argv[5]);
 	else
@@ -71,6 +63,10 @@ t_philo	*init_philo(t_args args)
 		philo[i].lastmeal = get_time();
 		philo[i].ate_times = 0;
 		philo[i].is_eating = 0;
+		if (i == args.philo_number - 1)
+			philo[i].next_fork_mutex = &philo[0].fork_mutex;
+		else
+			philo[i].next_fork_mutex = &philo[i + 1].fork_mutex;
 		i++;
 	}
 	return (philo);
@@ -80,6 +76,12 @@ int	create_threads(t_args	*args, t_philo	*philo)
 {
 	int	i;
 
+	i = 0;
+	while (i < args->philo_number)
+	{
+		pthread_mutex_init(&philo[i].fork_mutex, NULL);
+		i++;
+	}
 	i = 0;
 	while (i < args->philo_number)
 	{
