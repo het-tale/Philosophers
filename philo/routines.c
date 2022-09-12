@@ -6,19 +6,19 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 19:29:15 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/11 15:38:24 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/12 12:52:48 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-/**
-◦ timestamp_in_ms X has taken a fork
-◦ timestamp_in_ms X is eating
-◦ timestamp_in_ms X is sleeping
-◦ timestamp_in_ms X is thinking
-◦ timestamp_in_ms X died
-**/
+// /**
+// ◦ timestamp_in_ms X has taken a fork
+// ◦ timestamp_in_ms X is eating
+// ◦ timestamp_in_ms X is sleeping
+// ◦ timestamp_in_ms X is thinking
+// ◦ timestamp_in_ms X died
+// **/
 time_t	get_time(void)
 {
 	struct timeval	tv;
@@ -27,72 +27,73 @@ time_t	get_time(void)
 	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
-void	philo_sleep(t_args args, int time_to)
+void    philo_sleep(int time_to)
 {
-	time_t	awake;
+        time_t  awake;
 
-	(void)args;
-	awake = get_time() + time_to;
-	while (get_time() < awake)
-	{
-		// if (args.end_sim == 1)
-		//     break ;
-		usleep(100);
-	}
+        awake = get_time() + time_to;
+        while (get_time() < awake)
+        {
+                usleep(100);
+        }
 }
 
-void	print_msg(t_args args, char *str, time_t time)
+void	print_msg(char *str, t_philo philo)
 {
-	pthread_mutex_lock(&args.msg_mutex);
-	if (strcmp(str, "fork") == 0)
-		printf("%ld %d has taken a fork\n", time, args.philo[args.id].philo_id);
-	else if (strcmp(str, "eat") == 0)
-		printf("%ld %d is eating\n", time, args.philo[args.id].philo_id);
-	else if (strcmp(str, "sleep") == 0)
-		printf("%ld %d is sleeping\n", time, args.philo[args.id].philo_id);
-	else if (strcmp(str, "think") == 0)
-		printf("%ld %d is thinking\n", time, args.philo[args.id].philo_id);
-	else if (strcmp(str, "die") == 0)
-		printf("%ld %d died\n", time, args.philo[args.id].philo_id);
-	pthread_mutex_unlock(&args.msg_mutex);
+	pthread_mutex_lock(&philo.args.msg_mutex);
+	printf("%ld %d %s\n", get_time(), (philo.philo_id + 1), str);
+	pthread_mutex_unlock(&philo.args.msg_mutex);
 }
 
-void	eat_routine(t_args args)
+void	pick_fork(t_philo philo)
 {
-	time_t	time;
+	int	index;
 
-	time = get_time();
-	pthread_mutex_lock(&args.forks_mutex[args.philo[args.id].left_i]);
-	print_msg(args, "fork", time);
-	pthread_mutex_lock(&args.forks_mutex[args.philo[args.id].right_i]);
-	print_msg(args, "fork", time);
-	print_msg(args, "eat", time);
-	pthread_mutex_lock(&args.philo[args.id].lastmeal_mutex);
-	args.philo[args.id].lastmeal = get_time();
-	pthread_mutex_unlock(&args.philo[args.id].lastmeal_mutex);
-	philo_sleep(args, args.time_to_eat);
-	pthread_mutex_unlock(&args.forks_mutex[args.philo[args.id].right_i]);
-	pthread_mutex_unlock(&args.forks_mutex[args.philo[args.id].left_i]);
+	pthread_mutex_lock(&philo.args.forks_mutex[philo.philo_id]);
+	print_msg("has taken a fork", philo);
+	index = (philo.philo_id + 1) % philo.args.philo_number;
+	pthread_mutex_lock(&philo.args.forks_mutex[index]);
+	print_msg("has taken a fork", philo);
 }
 
-void	sleep_routine(t_args args)
+void	eat_routine(t_philo philo)
 {
-	time_t	time;
+	philo.ate_times++;
+	philo.lastmeal = get_time();
+	print_msg("is eating", philo);
+	pthread_mutex_lock(&philo.lastmeal_mutex);
+	philo.is_eating = 1;
+	philo_sleep(philo.args.time_to_eat);
+	pthread_mutex_unlock(&philo.lastmeal_mutex);
+	philo.is_eating = 0;
+}
 
-	time = get_time();
-	print_msg(args, "sleep", time);
-	philo_sleep(args, args.time_to_sleep);
+void	sleep_routine(t_philo philo)
+{
+	int	index;
+
+	index = (philo.philo_id + 1) % philo.args.philo_number;
+	print_msg("is sleeping", philo);
+	pthread_mutex_unlock(&philo.args.forks_mutex[philo.philo_id]);
+	pthread_mutex_unlock(&philo.args.forks_mutex[index]);
+	philo_sleep(philo.args.time_to_sleep);
 }
 
 void	*routine(void *data)
 {
-	t_args	*args;
+	t_philo	philo;
 
-	args = (t_args *) data;
+	philo = *(t_philo *) data;
+	if (philo.philo_id % 2)
+		usleep(100);
 	while (1)
 	{
-		eat_routine(*args);
-		//sleep_routine(*args);
+		// if (philo.args.number_of_times > 0 && philo.args.number_of_times == philo.ate_times)
+		// 	philo.args.end_sim++;
+		pick_fork(philo);
+		eat_routine(philo);
+		sleep_routine(philo);
+		print_msg("is thinking", philo);
 	}
 	return (NULL);
 }
