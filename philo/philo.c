@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 20:49:46 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/13 17:03:40 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/13 17:32:58 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,15 @@ void	*start(void *data)
 {
 	int	i;
 	t_philo	*philo;
+	pthread_t	tid;
 
 	philo = (t_philo *)data;
 	i = 0;
 	philo->max_times_should_eat = 0;
 	philo->ate_times = 0;
 	philo->expected_death_time = philo->args->time_to_die + philo->args->start_time;
+	pthread_create(&tid, NULL, &end_simulation, philo);
+	pthread_detach(tid);
 	while (i < philo->args->number_of_times || !(philo->args->number_of_times))
 	{
 		routine(philo);
@@ -102,30 +105,27 @@ t_philo	*start_simulation(t_args *args)
 	return (philo);
 }
 
-void	end_simulation(t_philo *philo, t_args *args)
+void	*end_simulation(void *data)
 {
-	int	i;
+	t_philo	*philo;
 
-	i = -1;
-	while (++i < args->philo_number)
+	philo = (t_philo *)data;
+	while (philo->args->end_sim != 1)
 	{
-		while (philo[i].args->end_sim != 1)
+		if (get_time() >= philo->expected_death_time && philo->is_eating != EATING)
 		{
-			if (get_time() >= philo[i].expected_death_time && philo[i].is_eating == NOT_EATING)
-			{
-				print_msg("died", &philo[i]);
-				pthread_mutex_lock(&philo[i].args->msg_mutex);
-				philo[i].args->end_sim = 1;
-				break ;
-			}
-			else if (philo[i].max_times_should_eat == 1)
-			{
-				philo[i].args->number_of_times += 1;
-				break ;
-			}
+			print_msg("died", philo);
+			pthread_mutex_lock(&philo->args->msg_mutex);
+			philo->args->end_sim = 1;
+			break ;
 		}
-		i++;
+		else if (philo->max_times_should_eat == 1)
+		{
+			philo->args->number_of_times += 1;
+			break ;
+		}
 	}
+	return (NULL);
 }
 
 int	main(int argc, char *argv[])
@@ -141,7 +141,7 @@ int	main(int argc, char *argv[])
 		philo = start_simulation(&args);
 		if (!philo)
 			return (0);
-		//end_simulation(philo, &args);
+		// end_simulation(philo, &args);
 	}
 	else
 		write(2, "Usage : ./philo <arg1> <arg2> <arg3> <arg4> [arg5]\n", 51);

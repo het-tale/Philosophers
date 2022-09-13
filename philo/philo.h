@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 20:50:21 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/13 17:01:50 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/13 17:26:31 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,4 +55,5 @@ int				ft_atoi(const char *str);
 void			routine(t_philo *philo);
 unsigned int	get_time(void);
 void			print_msg(char *str, t_philo *philo);
+void			*end_simulation(void *data);
 #endif
