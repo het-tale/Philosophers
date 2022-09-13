@@ -6,11 +6,30 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 20:49:46 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/12 17:29:46 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/13 17:03:40 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	*start(void *data)
+{
+	int	i;
+	t_philo	*philo;
+
+	philo = (t_philo *)data;
+	i = 0;
+	philo->max_times_should_eat = 0;
+	philo->ate_times = 0;
+	philo->expected_death_time = philo->args->time_to_die + philo->args->start_time;
+	while (i < philo->args->number_of_times || !(philo->args->number_of_times))
+	{
+		routine(philo);
+		i++;
+	}
+	philo->max_times_should_eat = 1;
+	return (NULL);
+}
 
 t_args	init_args(int argc, char *argv[])
 {
@@ -20,13 +39,13 @@ t_args	init_args(int argc, char *argv[])
 	args.time_to_die = ft_atoi(argv[2]);
 	args.time_to_eat = ft_atoi(argv[3]);
 	args.time_to_sleep = ft_atoi(argv[4]);
-	args.forks_mutex = malloc(sizeof(pthread_mutex_t) * args.philo_number);
 	args.end_sim = 0;
+	args.number_of_ate_philos = 0;
 	pthread_mutex_init(&args.msg_mutex, NULL);
 	if (argc == 6)
 		args.number_of_times = ft_atoi(argv[5]);
 	else
-		args.number_of_times = -1;
+		args.number_of_times = 0;
 	return (args);
 }
 
@@ -39,7 +58,7 @@ int	check_errors(t_args args, int argc)
 		printf("invalid arguments\n");
 		return (0);
 	}
-	if (argc == 6 && args.number_of_times < 0)
+	if (argc == 6 && !(args.number_of_times))
 	{
 		printf("invalid arguments\n");
 		return (0);
@@ -48,7 +67,7 @@ int	check_errors(t_args args, int argc)
 	return (1);
 }
 
-t_philo	*init_philo(t_args *args)
+t_philo	*start_simulation(t_args *args)
 {
 	t_philo	*philo;
 	int		i;
@@ -56,54 +75,57 @@ t_philo	*init_philo(t_args *args)
 	i = 0;
 	philo = malloc(sizeof(t_philo) * args->philo_number);
 	while (i < args->philo_number)
+		pthread_mutex_init(&philo[i++].fork_mutex, NULL);
+	i = 0;
+	while (i < args->philo_number)
 	{
 		philo[i].philo_id = i + 1;
 		philo[i].args = args;
-		pthread_mutex_init(&philo[i].lastmeal_mutex, NULL);
-		philo[i].lastmeal = get_time();
-		philo[i].ate_times = 0;
-		philo[i].is_eating = 0;
 		if (i == args->philo_number - 1)
 			philo[i].next_fork_mutex = &philo[0].fork_mutex;
 		else
 			philo[i].next_fork_mutex = &philo[i + 1].fork_mutex;
 		i++;
 	}
-	return (philo);
-}
-
-int	create_threads(t_args	*args, t_philo	*philo)
-{
-	int	i;
-
-	i = 0;
-	while (i < args->philo_number)
-	{
-		pthread_mutex_init(&philo[i].fork_mutex, NULL);
-		i++;
-	}
 	i = 0;
 	args->start_time = get_time();
 	while (i < args->philo_number)
 	{
-		pthread_create(&philo[i].tid, NULL, &routine, &philo[i]);
+		if (pthread_create(&philo[i].tid, NULL, &start, &philo[i]) != 0)
+			return (printf("Thread creation Failed \n"), NULL);
+		usleep(20);
 		i++;
 	}
-	return (0);
+	i = -1;
+	while (++i < args->philo_number)
+		pthread_join(philo[i].tid, NULL);
+	return (philo);
 }
 
-void	end_simulation(t_philo *philo, t_args args)
+void	end_simulation(t_philo *philo, t_args *args)
 {
 	int	i;
 
-	i = 0;
-	while (i < args.philo_number)
+	i = -1;
+	while (++i < args->philo_number)
 	{
-		pthread_join(philo[i].tid, NULL);
+		while (philo[i].args->end_sim != 1)
+		{
+			if (get_time() >= philo[i].expected_death_time && philo[i].is_eating == NOT_EATING)
+			{
+				print_msg("died", &philo[i]);
+				pthread_mutex_lock(&philo[i].args->msg_mutex);
+				philo[i].args->end_sim = 1;
+				break ;
+			}
+			else if (philo[i].max_times_should_eat == 1)
+			{
+				philo[i].args->number_of_times += 1;
+				break ;
+			}
+		}
 		i++;
 	}
-	free(philo);
-	free(args.forks_mutex);
 }
 
 int	main(int argc, char *argv[])
@@ -116,10 +138,10 @@ int	main(int argc, char *argv[])
 		args = init_args(argc, argv);
 		if (!check_errors(args, argc))
 			return (0);
-		philo = init_philo(&args);
-		if (create_threads(&args, philo))
-			return (1);
-		end_simulation(philo, args);
+		philo = start_simulation(&args);
+		if (!philo)
+			return (0);
+		//end_simulation(philo, &args);
 	}
 	else
 		write(2, "Usage : ./philo <arg1> <arg2> <arg3> <arg4> [arg5]\n", 51);
