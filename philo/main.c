@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 21:22:14 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/14 21:38:45 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/14 21:55:33 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,26 @@ int	check_errors(t_args args, int argc)
 	return (1);
 }
 
+void	destroy_mutexes(t_args *args)
+{
+	int	i;
+
+	i = 0;
+	pthread_mutex_destroy(&args->msg_mutex);
+	pthread_mutex_destroy(&args->fork_mutex);
+	pthread_mutex_destroy(&args->end_mutex);
+	pthread_mutex_destroy(&args->eat_mutex);
+	pthread_mutex_destroy(&args->death_mutex);
+	pthread_mutex_destroy(&args->lastmeal_mutex);
+	args->fork = malloc(sizeof(t_fork) * args->philo_number);
+	while (i < args->philo_number)
+	{
+		pthread_mutex_destroy(&args->fork[i].used_mutex);
+		args->fork[i].used = 0;
+		i++;
+	}
+}
+
 int	main(int argc, char *argv[])
 {
 	t_args		args;
@@ -82,6 +102,7 @@ int	main(int argc, char *argv[])
 		else
 			start_simulation(&args);
 		join_threads(&args);
+		destroy_mutexes(&args);
 	}
 	else
 		write(2, "Usage : ./philo <arg1> <arg2> <arg3> <arg4> [arg5]\n", 51);

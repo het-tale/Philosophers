@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 20:49:46 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/14 21:25:48 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/14 21:53:54 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,8 @@ void	join_threads(t_args *args)
 	i = -1;
 	while (++i < args->philo_number)
 		pthread_join(args->philo[i].tid, NULL);
+	free(args->fork);
+	free(args->philo);
 }
 
 void	single_philo(t_args *args)
