@@ -6,56 +6,90 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 14:25:03 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/13 17:15:32 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/14 20:33:47 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-unsigned int	get_time(void)
-{
-	struct timeval	time;
-
-	gettimeofday(&time, NULL);
-	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
-}
-
-void    sleep_philo(unsigned int time_to)
-{
-        unsigned int    awake;
-
-        awake = get_time();
-        while (get_time() < awake + time_to / 1000)
-            usleep(80);
-}
 
 void    print_msg(char *str, t_philo *philo)
 {
     unsigned int    time_ms;
 
     pthread_mutex_lock(&philo->args->msg_mutex);
-    time_ms = get_time() - philo->args->start_time;
-    printf("%u %d %s\n", time_ms, philo->philo_id, str);
+    if (!is_dead(philo->args) && !end_simulation(philo->args))
+    {
+        time_ms = get_time() - philo->args->start_time;
+        printf("%u %d %s\n", time_ms, philo->philo_id, str); 
+    }
     pthread_mutex_unlock(&philo->args->msg_mutex);
 }
 
-void    routine(t_philo *philo)
+void	put_fork_down(t_fork *fork)
 {
-    pthread_mutex_lock(&philo->fork_mutex);
-    print_msg("has taken a fork", philo);
-    pthread_mutex_lock(philo->next_fork_mutex);
-    print_msg("has taken a fork", philo);
-    philo->is_eating = EATING;
-    philo->ate_times += 1;
-    print_msg("is eating", philo);
-    philo->expected_death_time = get_time() + philo->args->time_to_die;
-    sleep_philo(philo->args->time_to_eat * 1000);
-    pthread_mutex_unlock(&philo->fork_mutex);
-    pthread_mutex_unlock(philo->next_fork_mutex);
-    philo->is_eating = NOT_EATING;
-    if (philo->ate_times >= philo->args->number_of_ate_philos && philo->args->number_of_times)
-        return ;
-    print_msg("is sleeping", philo);
-    sleep_philo(philo->args->time_to_sleep * 1000);
-    print_msg("is thinking", philo);
+	pthread_mutex_lock(&fork->used_mutex);
+	fork->used = 0;
+	pthread_mutex_unlock(&fork->used_mutex);
+}
+
+int	pick_fork(t_philo *philo, t_fork *fork)
+{
+	pthread_mutex_lock(&fork->used_mutex);
+	if(!fork->used)
+	{
+		print_msg("has taken a fork", philo);
+		fork->used = philo->philo_id;
+	}
+	if (fork->used == philo->philo_id)
+	{
+		pthread_mutex_unlock(&fork->used_mutex);
+		return (1);
+	}
+	pthread_mutex_unlock(&fork->used_mutex);
+	return (0);
+}
+
+void	eat_routine(t_philo *philo)
+{
+	while(1)
+	{
+		if(pick_fork(philo, &philo->args->fork[philo->left_i]))
+			break ;
+		usleep(100);
+	}
+	while(1)
+	{
+		if(pick_fork(philo, &philo->args->fork[philo->right_i]))
+			break ;
+		usleep(100);
+	}
+	pthread_mutex_lock(&philo->args->lastmeal_mutex);
+	print_msg("is eating", philo);
+	philo->lastmeal = get_time();
+	pthread_mutex_unlock(&philo->args->lastmeal_mutex);
+	sleep_philo(philo->args->time_to_eat, philo->args);
+	pthread_mutex_lock(&philo->args->eat_mutex);
+	philo->ate_times++;
+	pthread_mutex_unlock(&philo->args->eat_mutex);
+	put_fork_down(&philo->args->fork[philo->left_i]);
+	put_fork_down(&philo->args->fork[philo->right_i]);
+}
+
+void	*start(void *data)
+{
+	t_philo	*philo;
+
+	philo = (t_philo *)data;
+	if (philo->philo_id % 2 == 0)
+		usleep(1500);
+	while (!is_dead(philo->args))
+	{
+		eat_routine(philo);
+		if (end_simulation(philo->args))
+			break ;
+		print_msg("is sleeping", philo);
+		sleep_philo(philo->args->time_to_sleep, philo->args);
+		print_msg("is thinking", philo);
+	}
+	return (NULL);
 }

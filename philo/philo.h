@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 20:50:21 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/13 17:26:31 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/14 18:35:17 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,13 @@
 
 typedef struct s_args	t_args;
 typedef struct s_philo	t_philo;
+typedef struct s_fork	t_fork;
+
+struct s_fork
+{
+	pthread_mutex_t		used_mutex;
+	int					used;
+};
 
 struct s_args
 {
@@ -32,28 +39,51 @@ struct s_args
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				number_of_times;
-	pthread_mutex_t	msg_mutex;
 	int				end_sim;
+	int				died;
 	unsigned int	start_time;
 	int				number_of_ate_philos;
+	pthread_mutex_t	msg_mutex;
+	pthread_mutex_t	fork_mutex;
+	pthread_mutex_t	eat_mutex;
+	pthread_mutex_t	death_mutex;
+	pthread_mutex_t	end_mutex;
+	pthread_mutex_t	lastmeal_mutex;
+	t_philo			*philo;
+	t_fork			*fork;
 };
 
 struct s_philo
 {
 	int				philo_id;
-	unsigned int	expected_death_time;
-	pthread_mutex_t	fork_mutex;
-	pthread_mutex_t	*next_fork_mutex;
+	int				left_i;
+	int				right_i;
 	pthread_t		tid;
-	int				max_times_should_eat;
 	int				ate_times;
-	int				is_eating;
 	t_args			*args;
+	long int	lastmeal;
 };
-
+//atoi.c
 int				ft_atoi(const char *str);
-void			routine(t_philo *philo);
+//conditions.c
+int				is_dead(t_args *args);
+int				end_simulation(t_args *args);
+int				is_all_ate(t_philo *philo);
+//philo_utils.c
 unsigned int	get_time(void);
+void			sleep_philo(unsigned int time_to, t_args *args);
+void			check_death(t_args *args);
+//routines.c
+void			*start(void *data);
+void			eat_routine(t_philo *philo);
+int				pick_fork(t_philo *philo, t_fork *fork);
+void			put_fork_down(t_fork *fork);
 void			print_msg(char *str, t_philo *philo);
-void			*end_simulation(void *data);
+//philo.c
+t_args	init_args(int argc, char *argv[]);
+int		check_errors(t_args args, int argc);
+void	start_simulation(t_args *args);
+void	*one_philo(void *data);
+void	single_philo(t_args *args);
+
 #endif

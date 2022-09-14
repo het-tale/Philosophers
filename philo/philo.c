@@ -6,49 +6,42 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 20:49:46 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/13 17:32:58 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/14 20:47:35 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	*start(void *data)
-{
-	int	i;
-	t_philo	*philo;
-	pthread_t	tid;
-
-	philo = (t_philo *)data;
-	i = 0;
-	philo->max_times_should_eat = 0;
-	philo->ate_times = 0;
-	philo->expected_death_time = philo->args->time_to_die + philo->args->start_time;
-	pthread_create(&tid, NULL, &end_simulation, philo);
-	pthread_detach(tid);
-	while (i < philo->args->number_of_times || !(philo->args->number_of_times))
-	{
-		routine(philo);
-		i++;
-	}
-	philo->max_times_should_eat = 1;
-	return (NULL);
-}
-
 t_args	init_args(int argc, char *argv[])
 {
 	t_args	args;
+	int		i;
 
 	args.philo_number = ft_atoi(argv[1]);
 	args.time_to_die = ft_atoi(argv[2]);
 	args.time_to_eat = ft_atoi(argv[3]);
 	args.time_to_sleep = ft_atoi(argv[4]);
 	args.end_sim = 0;
+	args.died = 0;
 	args.number_of_ate_philos = 0;
 	pthread_mutex_init(&args.msg_mutex, NULL);
+	pthread_mutex_init(&args.fork_mutex, NULL);
+	pthread_mutex_init(&args.end_mutex, NULL);
+	pthread_mutex_init(&args.eat_mutex, NULL);
+	pthread_mutex_init(&args.death_mutex, NULL);
+	pthread_mutex_init(&args.lastmeal_mutex, NULL);
+	args.fork = malloc(sizeof(t_fork) * args.philo_number);
+	i = 0;
+	while (i < args.philo_number)
+	{
+		pthread_mutex_init(&args.fork[i].used_mutex, NULL);
+		args.fork[i].used = 0;
+		i++;
+	}
 	if (argc == 6)
 		args.number_of_times = ft_atoi(argv[5]);
 	else
-		args.number_of_times = 0;
+		args.number_of_times = -1;
 	return (args);
 }
 
@@ -61,7 +54,7 @@ int	check_errors(t_args args, int argc)
 		printf("invalid arguments\n");
 		return (0);
 	}
-	if (argc == 6 && !(args.number_of_times))
+	if (argc == 6 && (args.number_of_times <= 0))
 	{
 		printf("invalid arguments\n");
 		return (0);
@@ -70,78 +63,80 @@ int	check_errors(t_args args, int argc)
 	return (1);
 }
 
-t_philo	*start_simulation(t_args *args)
+void	init_philo(t_args *args)
 {
-	t_philo	*philo;
 	int		i;
 
 	i = 0;
-	philo = malloc(sizeof(t_philo) * args->philo_number);
-	while (i < args->philo_number)
-		pthread_mutex_init(&philo[i++].fork_mutex, NULL);
-	i = 0;
+	args->philo = malloc(sizeof(t_philo) * args->philo_number);
 	while (i < args->philo_number)
 	{
-		philo[i].philo_id = i + 1;
-		philo[i].args = args;
-		if (i == args->philo_number - 1)
-			philo[i].next_fork_mutex = &philo[0].fork_mutex;
-		else
-			philo[i].next_fork_mutex = &philo[i + 1].fork_mutex;
+		args->philo[i].philo_id = i + 1;
+		args->philo[i].args = args;
+		args->philo[i].ate_times = 0;
+		args->philo[i].right_i = i;
+		args->philo[i].left_i = (i + 1) % args->philo_number;
+		args->philo[i].lastmeal = 0;
 		i++;
 	}
+}
+
+void	start_simulation(t_args *args)
+{
+	int		i;
+
 	i = 0;
+	init_philo(args);
 	args->start_time = get_time();
 	while (i < args->philo_number)
 	{
-		if (pthread_create(&philo[i].tid, NULL, &start, &philo[i]) != 0)
-			return (printf("Thread creation Failed \n"), NULL);
-		usleep(20);
+		args->philo[i].lastmeal = args->start_time;
+		pthread_create(&args->philo[i].tid, NULL, &start, &args->philo[i]);
 		i++;
 	}
-	i = -1;
-	while (++i < args->philo_number)
-		pthread_join(philo[i].tid, NULL);
-	return (philo);
+	check_death(args);
 }
 
-void	*end_simulation(void *data)
+void	join_threads(t_args *args)
+{
+	int	i;
+
+	i = -1;
+	while (++i < args->philo_number)
+		pthread_join(args->philo[i].tid, NULL);
+}
+
+void	single_philo(t_args *args)
+{
+	init_philo(args);
+	args->start_time = get_time();
+	pthread_create(&args->philo[0].tid, NULL, &one_philo, &args->philo[0]);
+}
+
+void	*one_philo(void *data)
 {
 	t_philo	*philo;
 
 	philo = (t_philo *)data;
-	while (philo->args->end_sim != 1)
-	{
-		if (get_time() >= philo->expected_death_time && philo->is_eating != EATING)
-		{
-			print_msg("died", philo);
-			pthread_mutex_lock(&philo->args->msg_mutex);
-			philo->args->end_sim = 1;
-			break ;
-		}
-		else if (philo->max_times_should_eat == 1)
-		{
-			philo->args->number_of_times += 1;
-			break ;
-		}
-	}
+	print_msg("has taken a fork", philo);
+	usleep(philo->args->time_to_die * 1000);
+	print_msg("died", philo);
 	return (NULL);
 }
-
 int	main(int argc, char *argv[])
 {
 	t_args		args;
-	t_philo		*philo;
 
 	if (argc == 5 || argc == 6)
 	{
 		args = init_args(argc, argv);
 		if (!check_errors(args, argc))
 			return (0);
-		philo = start_simulation(&args);
-		if (!philo)
-			return (0);
-		// end_simulation(philo, &args);
+		if (args.philo_number == 1)
+			single_philo(&args);
+		else
+			start_simulation(&args);
+		join_threads(&args);
 	}
 	else
 		write(2, "Usage : ./philo <arg1> <arg2> <arg3> <arg4> [arg5]\n", 51);
