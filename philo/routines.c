@@ -6,23 +6,23 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 14:25:03 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/14 20:33:47 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/14 21:20:31 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void    print_msg(char *str, t_philo *philo)
+void	print_msg(char *str, t_philo *philo)
 {
-    unsigned int    time_ms;
+	unsigned int	time_ms;
 
-    pthread_mutex_lock(&philo->args->msg_mutex);
-    if (!is_dead(philo->args) && !end_simulation(philo->args))
-    {
-        time_ms = get_time() - philo->args->start_time;
-        printf("%u %d %s\n", time_ms, philo->philo_id, str); 
-    }
-    pthread_mutex_unlock(&philo->args->msg_mutex);
+	pthread_mutex_lock(&philo->args->msg_mutex);
+	if (!is_dead(philo->args) && !end_simulation(philo->args))
+	{
+		time_ms = get_time() - philo->args->start_time;
+		printf("%u %d %s\n", time_ms, philo->philo_id, str);
+	}
+	pthread_mutex_unlock(&philo->args->msg_mutex);
 }
 
 void	put_fork_down(t_fork *fork)
@@ -35,7 +35,7 @@ void	put_fork_down(t_fork *fork)
 int	pick_fork(t_philo *philo, t_fork *fork)
 {
 	pthread_mutex_lock(&fork->used_mutex);
-	if(!fork->used)
+	if (!fork->used)
 	{
 		print_msg("has taken a fork", philo);
 		fork->used = philo->philo_id;
@@ -51,15 +51,15 @@ int	pick_fork(t_philo *philo, t_fork *fork)
 
 void	eat_routine(t_philo *philo)
 {
-	while(1)
+	while (1)
 	{
-		if(pick_fork(philo, &philo->args->fork[philo->left_i]))
+		if (pick_fork(philo, &philo->args->fork[philo->left_i]))
 			break ;
 		usleep(100);
 	}
-	while(1)
+	while (1)
 	{
-		if(pick_fork(philo, &philo->args->fork[philo->right_i]))
+		if (pick_fork(philo, &philo->args->fork[philo->right_i]))
 			break ;
 		usleep(100);
 	}

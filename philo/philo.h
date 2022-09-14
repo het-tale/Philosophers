@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 20:50:21 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/14 18:35:17 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/14 21:28:12 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ struct s_philo
 	pthread_t		tid;
 	int				ate_times;
 	t_args			*args;
-	long int	lastmeal;
+	long int		lastmeal;
 };
 //atoi.c
 int				ft_atoi(const char *str);
@@ -80,10 +80,14 @@ int				pick_fork(t_philo *philo, t_fork *fork);
 void			put_fork_down(t_fork *fork);
 void			print_msg(char *str, t_philo *philo);
 //philo.c
-t_args	init_args(int argc, char *argv[]);
-int		check_errors(t_args args, int argc);
-void	start_simulation(t_args *args);
-void	*one_philo(void *data);
-void	single_philo(t_args *args);
+void			start_simulation(t_args *args);
+void			*one_philo(void *data);
+void			single_philo(t_args *args);
+void			join_threads(t_args *args);
+void			init_philo(t_args *args);
+//main.c
+t_args			init_args(int argc, char *argv[]);
+int				check_errors(t_args args, int argc);
+void			init_mutexes(t_args *args);
 
 #endif
