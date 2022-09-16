@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 17:00:37 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/14 21:15:07 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/16 13:42:02 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void	print_death(t_args *args, int i)
 	unsigned int	time;
 
 	pthread_mutex_lock(&args->msg_mutex);
-	time = get_time() - args->start_time;
+	time = get_time() - args->start_time - 1;
 	printf("%u %d %s\n", time, args->philo[i].philo_id, "died");
 	pthread_mutex_unlock(&args->msg_mutex);
 }

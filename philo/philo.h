@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 20:50:21 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/14 21:28:12 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/16 13:40:56 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ int				is_all_ate(t_philo *philo);
 unsigned int	get_time(void);
 void			sleep_philo(unsigned int time_to, t_args *args);
 void			check_death(t_args *args);
+void			print_death(t_args *args, int i);
 //routines.c
 void			*start(void *data);
 void			eat_routine(t_philo *philo);
