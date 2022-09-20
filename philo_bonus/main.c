@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 21:22:14 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/20 22:16:53 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/20 22:42:03 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ t_args	init_args(int argc, char *argv[])
 	args.time_to_die = ft_atoi(argv[2]);
 	args.time_to_eat = ft_atoi(argv[3]);
 	args.time_to_sleep = ft_atoi(argv[4]);
-	args.end_sim = 0;
 	args.died = 0;
 	args.pids = malloc(sizeof(pid_t) * args.philo_number);
 	init_global_sem(&args);

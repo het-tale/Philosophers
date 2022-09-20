@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 14:25:03 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/20 22:16:23 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/20 22:41:13 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	print_msg(char *str, t_philo *philo)
 	unsigned int	time_ms;
 
 	sem_wait(philo->args->sem_msg);
-	if (!is_dead(philo->args) && !end_simulation(philo->args))
+	if (!is_dead(philo->args))
 	{
 		time_ms = get_time() - philo->args->start_time;
 		printf("%u %d %s\n", time_ms, philo->philo_id, str);

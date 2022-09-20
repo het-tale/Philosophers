@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 20:49:46 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/20 22:04:35 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/20 22:39:31 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,21 @@ void	start_simulation(t_args *args)
 	}
 }
 
+int	is_dead(t_args *args)
+{
+	sem_wait(args->sem_death);
+	if (args->died)
+	{
+		sem_post(args->sem_death);
+		return (1);
+	}
+	else
+	{
+		sem_post(args->sem_death);
+		return (0);
+	}
+}
+
 void	print_death(t_philo *philo)
 {
 	unsigned int	time;
@@ -69,7 +84,7 @@ void	*check_death(void *data)
 	t_philo	*philo;
 
 	philo = (t_philo *)data;
-	while (end_simulation(philo->args) == 0)
+	while (1)
 	{
 		sem_wait(philo->args->sem_lastmeal);
 		if (get_time() - philo->lastmeal > philo->args->time_to_die)

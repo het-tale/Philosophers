@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 20:50:21 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/20 22:21:20 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/20 22:43:12 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@
 # define FORKS "/philo_forks"
 # define MEAL "/philo_lastmeal"
 # define MSG "/philo_msg"
-# define END "/philo_end"
 # define DEATH "/philo_death"
 # define EAT "/philo_eat"
 # define USAGE "Usage : ./philo_bonus <arg1> <arg2> <arg3> <arg4> [arg5]\n"
@@ -41,13 +40,11 @@ struct s_args
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				number_of_times;
-	int				end_sim;
 	int				died;
 	unsigned int	start_time;
 	int				number_of_ate_philos;
 	sem_t			*sem_forks;
 	sem_t			*sem_msg;
-	sem_t			*sem_end;
 	sem_t			*sem_lastmeal;
 	sem_t			*sem_death;
 	sem_t			*sem_eat;

@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 17:00:37 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/20 22:03:49 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/20 22:41:29 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	sleep_philo(unsigned int time_to, t_args *args)
 	(void)args;
 	while (get_time() < awake + time_to)
 	{
-		if (is_dead(args) || end_simulation(args))
+		if (is_dead(args))
 			break ;
 		usleep(100);
 	}
