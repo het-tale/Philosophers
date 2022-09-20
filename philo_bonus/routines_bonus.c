@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 14:25:03 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/20 17:25:17 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/20 20:24:48 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void	*start(t_philo *philo)
 	while (!is_dead(philo->args))
 	{
 		eat_routine(philo);
-		if (end_simulation(philo->args))
+		if (philo->args->number_of_times != -1 && philo->ate_times >= philo->args->number_of_times)
 			break ;
 		print_msg("is sleeping", philo);
 		sleep_philo(philo->args->time_to_sleep, philo->args);

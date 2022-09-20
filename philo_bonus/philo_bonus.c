@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 20:49:46 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/20 17:27:52 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/20 20:26:48 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,13 +95,14 @@ void	*check_death(void *data)
 			philo->args->died = 1;
 			sem_post(philo->args->sem_death);
 			sem_wait(philo->args->sem_msg);
-			exit(1);
+			exit(DEAD);
 		}
 		sem_post(philo->args->sem_lastmeal);
 		usleep(200);
 		if (is_dead(philo->args))
 			break ;
-		is_max_ate(philo->args);
+		if (philo->args->number_of_times != -1 && philo->ate_times >= philo->args->number_of_times)
+			break ;
 	}
 	return (NULL);
 }

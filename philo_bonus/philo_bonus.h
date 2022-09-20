@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 20:50:21 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/20 17:04:44 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/20 20:05:33 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@
 # include <sys/time.h>
 # include <pthread.h>
 # define MAX_INT 2147483647
+# define DEAD 13
+# define FULL 37
 
 typedef struct s_args	t_args;
 typedef struct s_philo	t_philo;
