@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 21:22:14 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/20 20:09:57 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/20 22:16:53 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,32 +49,6 @@ int	check_errors(t_args args, int argc)
 	return (1);
 }
 
-void	init_global_sem(t_args *args)
-{
-	unlink_global_sem();
-	args->sem_forks = sem_open("/philo_forks", O_CREAT, S_IRUSR | S_IWUSR, args->philo_number);
-	args->sem_msg = sem_open("/philo_msg", O_CREAT, S_IRUSR | S_IWUSR, 1);
-	args->sem_end = sem_open("/philo_end", O_CREAT, S_IRUSR | S_IWUSR, 1);
-	args->sem_death = sem_open("/philo_death", O_CREAT, S_IRUSR | S_IWUSR, 1);
-}
-
-void close_global_sem(t_args *args)
-{
-	sem_close(args->sem_forks);
-	sem_close(args->sem_msg);
-	sem_close(args->sem_end);
-	sem_close(args->sem_death);
-	unlink_global_sem();
-}
-
-void	unlink_global_sem(void)
-{
-	sem_unlink("/philo_forks");
-	sem_unlink("/philo_msg");
-	sem_unlink("/philo_end");
-	sem_unlink("/philo_death");
-}
-
 void	wait_children(t_args *args)
 {
 	int	i;
@@ -109,6 +83,9 @@ int	main(int argc, char *argv[])
 		close_global_sem(&args);
 	}
 	else
-		write(2, "Usage : ./philo_bonus <arg1> <arg2> <arg3> <arg4> [arg5]\n", 57);
-	return (0);
+	{
+		printf("%s", USAGE);
+		return (EXIT_FAILURE);
+	}
+	return (EXIT_SUCCESS);
 }

@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 20:49:46 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/20 20:26:48 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/20 22:04:35 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,22 +54,6 @@ void	start_simulation(t_args *args)
 	}
 }
 
-void	is_max_ate(t_args *args)
-{
-	int	i;
-
-	i = 0;
-	while (args->number_of_times != -1 && i < args->philo_number
-		&& is_all_ate(&args->philo[i]))
-		i++;
-	if (i == args->philo_number)
-	{
-		sem_wait(args->sem_end);
-		args->end_sim = 1;
-		sem_post(args->sem_end);
-	}
-}
-
 void	print_death(t_philo *philo)
 {
 	unsigned int	time;
@@ -82,7 +66,7 @@ void	print_death(t_philo *philo)
 
 void	*check_death(void *data)
 {
-	t_philo *philo;
+	t_philo	*philo;
 
 	philo = (t_philo *)data;
 	while (end_simulation(philo->args) == 0)
@@ -101,7 +85,8 @@ void	*check_death(void *data)
 		usleep(200);
 		if (is_dead(philo->args))
 			break ;
-		if (philo->args->number_of_times != -1 && philo->ate_times >= philo->args->number_of_times)
+		if (philo->args->number_of_times != -1
+			&& philo->ate_times >= philo->args->number_of_times)
 			break ;
 	}
 	return (NULL);

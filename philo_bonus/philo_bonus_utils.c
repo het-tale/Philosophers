@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 17:00:37 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/20 20:02:56 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/20 22:03:49 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,4 +33,3 @@ void	sleep_philo(unsigned int time_to, t_args *args)
 		usleep(100);
 	}
 }
-

@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 14:25:03 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/20 20:24:48 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/20 22:16:23 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,24 +43,10 @@ void	eat_routine(t_philo *philo)
 	sem_post(philo->args->sem_forks);
 }
 
-void	init_local_sem(t_args *args)
-{
-	unlink_local_sem();
-	args->sem_lastmeal = sem_open("/philo_lastmeal", O_CREAT, S_IRUSR | S_IWUSR, 1);
-	args->sem_eat = sem_open("/philo_eat", O_CREAT, S_IRUSR | S_IWUSR, 1);
-}
-
-void close_local_sem(t_args *args)
-{
-	sem_close(args->sem_lastmeal);
-	sem_close(args->sem_eat);
-	unlink_local_sem();
-}
-
 void	unlink_local_sem(void)
 {
-	sem_unlink("/philo_lastmeal");
-	sem_unlink("/philo_eat");
+	sem_unlink(MEAL);
+	sem_unlink(EAT);
 }
 
 void	*start(t_philo *philo)
@@ -72,14 +58,14 @@ void	*start(t_philo *philo)
 	while (!is_dead(philo->args))
 	{
 		eat_routine(philo);
-		if (philo->args->number_of_times != -1 && philo->ate_times >= philo->args->number_of_times)
+		if (philo->args->number_of_times != -1
+			&& philo->ate_times >= philo->args->number_of_times)
 			break ;
 		print_msg("is sleeping", philo);
 		sleep_philo(philo->args->time_to_sleep, philo->args);
 		print_msg("is thinking", philo);
 	}
 	pthread_join(philo->tid, NULL);
-	close_global_sem(philo->args);
 	close_local_sem(philo->args);
 	exit(0);
 }
