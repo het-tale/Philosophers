@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 21:22:14 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/14 21:55:33 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/23 15:47:06 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ void	init_mutexes(t_args *args)
 
 	i = 0;
 	pthread_mutex_init(&args->msg_mutex, NULL);
-	pthread_mutex_init(&args->fork_mutex, NULL);
 	pthread_mutex_init(&args->end_mutex, NULL);
 	pthread_mutex_init(&args->eat_mutex, NULL);
 	pthread_mutex_init(&args->death_mutex, NULL);
@@ -74,7 +73,6 @@ void	destroy_mutexes(t_args *args)
 
 	i = 0;
 	pthread_mutex_destroy(&args->msg_mutex);
-	pthread_mutex_destroy(&args->fork_mutex);
 	pthread_mutex_destroy(&args->end_mutex);
 	pthread_mutex_destroy(&args->eat_mutex);
 	pthread_mutex_destroy(&args->death_mutex);
@@ -100,7 +98,10 @@ int	main(int argc, char *argv[])
 		if (args.philo_number == 1)
 			single_philo(&args);
 		else
+		{
 			start_simulation(&args);
+			check_death(&args);
+		}
 		join_threads(&args);
 		destroy_mutexes(&args);
 	}

@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 17:00:37 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/16 13:42:02 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/23 16:03:46 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,10 @@ void	sleep_philo(unsigned int time_to, t_args *args)
 		usleep(100);
 	}
 }
+/*
+check if all the philosophers ate at least number_of_times time
+if so update the end_sim variable
+*/
 
 void	is_max_ate(t_args *args)
 {
@@ -58,6 +62,13 @@ void	print_death(t_args *args, int i)
 	printf("%u %d %s\n", time, args->philo[i].philo_id, "died");
 	pthread_mutex_unlock(&args->msg_mutex);
 }
+
+/*
+while the simulation has not ended:
+*check for each philosopher if he doesn't eat more than time_to_die 
+if so update the death variable and print death.
+*check if all philos have eaten number_of_times times;
+*/
 
 void	check_death(t_args *args)
 {

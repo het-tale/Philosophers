@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 14:25:03 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/14 21:20:31 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/23 16:04:30 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,20 +49,18 @@ int	pick_fork(t_philo *philo, t_fork *fork)
 	return (0);
 }
 
+/*
+a philosopher can only pick a fork if it's available if not the philosopher 
+should wait until the fork is available
+this function updates lastmeal and times each philo ate
+*/
+
 void	eat_routine(t_philo *philo)
 {
-	while (1)
-	{
-		if (pick_fork(philo, &philo->args->fork[philo->left_i]))
-			break ;
+	while (!pick_fork(philo, &philo->args->fork[philo->left_i]))
 		usleep(100);
-	}
-	while (1)
-	{
-		if (pick_fork(philo, &philo->args->fork[philo->right_i]))
-			break ;
+	while (!pick_fork(philo, &philo->args->fork[philo->right_i]))
 		usleep(100);
-	}
 	pthread_mutex_lock(&philo->args->lastmeal_mutex);
 	print_msg("is eating", philo);
 	philo->lastmeal = get_time();
@@ -74,6 +72,10 @@ void	eat_routine(t_philo *philo)
 	put_fork_down(&philo->args->fork[philo->left_i]);
 	put_fork_down(&philo->args->fork[philo->right_i]);
 }
+/*routine of each philosopher the philosophers eat, sleep and think while 
+a philo is not dead or the simulation has not ended yet (each philo ate
+at least number of times)
+*/
 
 void	*start(void *data)
 {

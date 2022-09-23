@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 20:50:21 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/16 13:40:56 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/23 15:44:40 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,6 @@
 # include <sys/time.h>
 # include <pthread.h>
 # define MAX_INT 2147483647
-# define EATING 1
-# define NOT_EATING 0
 
 typedef struct s_args	t_args;
 typedef struct s_philo	t_philo;
@@ -44,7 +42,6 @@ struct s_args
 	unsigned int	start_time;
 	int				number_of_ate_philos;
 	pthread_mutex_t	msg_mutex;
-	pthread_mutex_t	fork_mutex;
 	pthread_mutex_t	eat_mutex;
 	pthread_mutex_t	death_mutex;
 	pthread_mutex_t	end_mutex;

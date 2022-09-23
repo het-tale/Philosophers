@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 20:49:46 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/16 13:44:28 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/09/23 15:56:47 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ void	start_simulation(t_args *args)
 		pthread_create(&args->philo[i].tid, NULL, &start, &args->philo[i]);
 		i++;
 	}
-	check_death(args);
 }
 
 void	join_threads(t_args *args)
