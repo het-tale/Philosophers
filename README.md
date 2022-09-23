@@ -102,4 +102,33 @@ When done using mutexes we should destroy them by calling the *pthread_mutex_des
 
 `int	pthread_mutex_destroy(pthread_mutex_t *mutex);`
 
+### Dealing With Time in The philosophers Project:
+
+#### The gettimeofday function
+
+In order to manage time in our projects we need to get the system temporal values.
+
+`int gettimeofday(struct timeval *tv, struct timezone *tz);`
+
+- **tv** : structure that contains the number of seconds *tv_sec* and microseconds *tv_usec* that have passed since 1st January 1970.
+- **tz** : timezone structure
+
+When this function is invoked it fills the tv attributes and return 0 if the call was successfull otherwise it returns -1.
+
+The equivalence between seconds, milliseconds and microseconds is as follows:
+
+| Seconds     | Milliseconds | Microseconds |
+| ----------- | -----------  | -----------  |
+| 1           | 1000         | 1000 000     |
+
+
+#### The usleep function
+
+The usleep function stops the execution of the calling thread a certain amount of time. Its prototype is :
+
+`int usleep(useconds_t usec);`
+
+- **usec** : number of microseconds.A calling thread should sleep *at least* usec time, this mean that it can sleep more depends on the system.
+
+This function returns 0 on success or -1 in failure
 
