@@ -1,6 +1,6 @@
 # Philosophers
 
-*These philosophers killed me before they died.*🙂
+*These philosophers killed me before they died.* 🙂
 
 ## The rules of the philosopher project:
 
@@ -34,10 +34,10 @@ The `<pthread.h>` library provides us with alot of useful functions to manipulat
 we can create a new thread from any other thread by using the pthread_create() function:
 `int	pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine) (void *), void *arg);`
 
-**thread** : a pointer to *pthread_t* variable, used to store the ID of the thread we are creating.
-**attr** : a structure that's used at thread creation time to determine attributes for the new thread. For our philosopher project we will use NULL.
-**start_routine** : The function that determine the behavior of the newly created thread.
-**arg** : the argument we pass to the *start_routine()* function. If the function requires more than one argument we should pass a structure to it.
+- **thread** : a pointer to *pthread_t* variable, used to store the ID of the thread we are creating.
+- **attr** : a structure that's used at thread creation time to determine attributes for the new thread. For our philosopher project we will use NULL.
+- **start_routine** : The function that determine the behavior of the newly created thread.
+- **arg** : the argument we pass to the *start_routine()* function. If the function requires more than one argument we should pass a structure to it.
 
 a successfull call to *pthread_create()* stores the id of the new thread in thread variable, and the function return 0,otherwise it returns error number.
 
