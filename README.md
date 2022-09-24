@@ -6,7 +6,7 @@
 
 The dining philosophers problem is a computer puzzle that introduces us to the concurrent programming. The problem illustrates synchronization issues. Our philosophers project describes a version of this problem.
 
-## The Mandatory Part
+## The Mandatory Part : *Philosophers with threads and mutexes*
 
 ### The Rules:
 
@@ -130,5 +130,7 @@ The usleep function stops the execution of the calling thread a certain amount o
 
 - **usec** : number of microseconds.A calling thread should sleep *at least* usec time, this mean that it can sleep more depends on the system.
 
-This function returns 0 on success or -1 in failure
+This function returns 0 on success or -1 in failure.
+
+## The Bonus Part : *Philosophers with processes and semaphores*
 
