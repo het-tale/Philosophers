@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 20:50:21 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/23 15:44:40 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/10/04 15:02:34 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <sys/time.h>
 # include <pthread.h>
 # define MAX_INT 2147483647
+# define USAGE "Usage : ./philo <arg1> <arg2> <arg3> <arg4> [arg5]\n"
 
 typedef struct s_args	t_args;
 typedef struct s_philo	t_philo;
@@ -66,6 +67,7 @@ int				ft_atoi(const char *str);
 int				is_dead(t_args *args);
 int				end_simulation(t_args *args);
 int				is_all_ate(t_philo *philo);
+void			ft_putstr_fd(int fd, char *str);
 //philo_utils.c
 unsigned int	get_time(void);
 void			sleep_philo(unsigned int time_to, t_args *args);
@@ -84,8 +86,7 @@ void			single_philo(t_args *args);
 void			join_threads(t_args *args);
 void			init_philo(t_args *args);
 //main.c
-t_args			init_args(int argc, char *argv[]);
+t_args			*init_args(int argc, char *argv[]);
 int				check_errors(t_args args, int argc);
 void			init_mutexes(t_args *args);
-
 #endif

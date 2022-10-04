@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 16:56:42 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/14 17:08:02 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/10/04 15:02:06 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,4 +52,16 @@ int	is_all_ate(t_philo *philo)
 	}
 	pthread_mutex_unlock(&philo->args->eat_mutex);
 	return (0);
+}
+
+void	ft_putstr_fd(int fd, char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		write(fd, &str[i], 1);
+		i++;
+	}
 }
