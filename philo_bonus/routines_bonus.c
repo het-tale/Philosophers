@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 14:25:03 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/20 22:41:13 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/10/05 21:57:26 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,20 +52,18 @@ void	unlink_local_sem(void)
 void	*start(t_philo *philo)
 {
 	init_local_sem(philo->args);
-	if (philo->philo_id % 2 == 0)
-		usleep(1500);
 	pthread_create(&philo->tid, NULL, &check_death, philo);
 	while (!is_dead(philo->args))
 	{
 		eat_routine(philo);
 		if (philo->args->number_of_times != -1
 			&& philo->ate_times >= philo->args->number_of_times)
-			break ;
+			exit(0) ;
 		print_msg("is sleeping", philo);
 		sleep_philo(philo->args->time_to_sleep, philo->args);
 		print_msg("is thinking", philo);
 	}
-	pthread_join(philo->tid, NULL);
+	//pthread_join(philo->tid, NULL);
 	close_local_sem(philo->args);
 	exit(0);
 }

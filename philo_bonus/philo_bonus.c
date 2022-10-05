@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 20:49:46 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/20 22:39:31 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/10/05 21:41:38 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void	print_death(t_philo *philo)
 	sem_wait(philo->args->sem_msg);
 	time = get_time() - philo->args->start_time;
 	printf("%u %d %s\n", time, philo->philo_id, "died");
-	sem_post(philo->args->sem_msg);
+	// sem_post(philo->args->sem_msg);
 }
 
 void	*check_death(void *data)
@@ -93,7 +93,6 @@ void	*check_death(void *data)
 			sem_wait(philo->args->sem_death);
 			philo->args->died = 1;
 			sem_post(philo->args->sem_death);
-			sem_wait(philo->args->sem_msg);
 			exit(DEAD);
 		}
 		sem_post(philo->args->sem_lastmeal);

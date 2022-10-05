@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 17:00:37 by het-tale          #+#    #+#             */
-/*   Updated: 2022/10/05 20:16:02 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/10/05 20:35:05 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	sleep_philo(unsigned int time_to, t_args *args)
 	{
 		// if (is_dead(args) || end_simulation(args))
 		// 	break ;
-		usleep(200);
+		usleep(100);
 	}
 }
 /*
@@ -59,7 +59,7 @@ int	print_death(t_args *args, int i)
 	unsigned int	time;
 
 	pthread_mutex_lock(&args->msg_mutex);
-	time = get_time() - args->start_time - 1;
+	time = get_time() - args->start_time;
 	printf("%u %d %s\n", time, args->philo[i].philo_id, "died");
 	pthread_mutex_unlock(&args->msg_mutex);
 	return (1);

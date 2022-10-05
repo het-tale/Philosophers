@@ -6,7 +6,7 @@
 #    By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/08/19 20:53:06 by het-tale          #+#    #+#              #
-#    Updated: 2022/09/20 22:43:35 by het-tale         ###   ########.fr        #
+#    Updated: 2022/10/05 21:09:20 by het-tale         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ SRCS    =   atoi_bonus.c init_close.c main.c philo_bonus.c philo_bonus_utils.c r
 
 OBJCT    =    ${SRCS:.c=.o}
 
-FLAGS    =    -Wall -Wextra -Werror -pthread -fsanitize=address
+FLAGS    =    -Wall -Wextra -Werror -pthread
 
 RM        =    rm -f
 

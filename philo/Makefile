@@ -6,7 +6,7 @@
 #    By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/08/19 20:53:06 by het-tale          #+#    #+#              #
-#    Updated: 2022/10/05 19:56:45 by het-tale         ###   ########.fr        #
+#    Updated: 2022/10/05 20:54:01 by het-tale         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ SRCS    =    philo.c atoi.c routines.c conditions.c philo_utils.c main.c
 
 OBJCT    =    ${SRCS:.c=.o}
 
-FLAGS    =    -Wall -Wextra -Werror -pthread -fsanitize=thread
+FLAGS    =    -Wall -Wextra -Werror -pthread
 
 RM        =    rm -f
 
