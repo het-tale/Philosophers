@@ -55,18 +55,15 @@ void	wait_children(t_args *args)
 	int	i;
 	int	status;
 
-	i = 0;
-	while (i < args->philo_number)
+	waitpid(-1, &status, 0);
+	if (WIFEXITED(status))
 	{
-		waitpid(-1, &status, 0);
 		if (WEXITSTATUS(status) == DEAD)
 		{
 			i = -1;
 			while (++i < args->philo_number)
 				kill(args->pids[i], SIGKILL);
-			break ;
 		}
-		i++;
 	}
 }
 
