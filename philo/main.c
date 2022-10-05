@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 21:22:14 by het-tale          #+#    #+#             */
-/*   Updated: 2022/10/04 15:19:00 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/10/05 10:30:18 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,9 @@ int	main(int argc, char *argv[])
 		destroy_mutexes(args);
 	}
 	else
+	{
 		ft_putstr_fd(2, USAGE);
+		return (EXIT_FAILURE);
+	}
 	return (EXIT_SUCCESS);
 }

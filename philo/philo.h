@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 20:50:21 by het-tale          #+#    #+#             */
-/*   Updated: 2022/10/04 15:02:34 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/10/05 10:26:24 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ struct s_args
 	int				end_sim;
 	int				died;
 	unsigned int	start_time;
-	int				number_of_ate_philos;
 	pthread_mutex_t	msg_mutex;
 	pthread_mutex_t	eat_mutex;
 	pthread_mutex_t	death_mutex;

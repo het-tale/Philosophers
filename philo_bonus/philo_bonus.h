@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 20:50:21 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/20 22:43:12 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/10/05 10:35:46 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <stdio.h>
 # include <sys/time.h>
 # include <pthread.h>
+# include <signal.h>
 # define MAX_INT 2147483647
 # define DEAD 13
 # define FORKS "/philo_forks"
@@ -42,7 +43,6 @@ struct s_args
 	int				number_of_times;
 	int				died;
 	unsigned int	start_time;
-	int				number_of_ate_philos;
 	sem_t			*sem_forks;
 	sem_t			*sem_msg;
 	sem_t			*sem_lastmeal;
@@ -79,9 +79,10 @@ t_philo			*init_philo(t_args *args);
 void			*check_death(void *data);
 void			print_death(t_philo *philo);
 //main.c
-t_args			init_args(int argc, char *argv[]);
+t_args			*init_args(int argc, char *argv[]);
 int				check_errors(t_args args, int argc);
 void			wait_children(t_args *args);
+void			ft_putstr_fd(int fd, char *str);
 //init_close.c
 void			init_global_sem(t_args *args);
 void			close_global_sem(t_args *args);
