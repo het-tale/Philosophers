@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 20:49:46 by het-tale          #+#    #+#             */
-/*   Updated: 2022/10/04 15:20:41 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/10/05 09:46:15 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void	*one_philo(void *data)
 
 	philo = (t_philo *)data;
 	print_msg("has taken a fork", philo);
-	usleep(philo->args->time_to_die * 1000);
+	sleep_philo(philo->args->time_to_die, philo->args);
 	print_death(philo->args, 0);
 	return (NULL);
 }

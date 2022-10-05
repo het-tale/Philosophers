@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 14:25:03 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/23 16:04:30 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/10/05 10:13:17 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ void	*start(void *data)
 
 	philo = (t_philo *)data;
 	if (philo->philo_id % 2 == 0)
-		usleep(1500);
+		usleep(1000);
 	while (!is_dead(philo->args))
 	{
 		eat_routine(philo);

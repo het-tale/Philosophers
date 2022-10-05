@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 17:00:37 by het-tale          #+#    #+#             */
-/*   Updated: 2022/09/23 16:03:46 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/10/05 10:12:52 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,10 +74,10 @@ void	check_death(t_args *args)
 {
 	int	i;
 
-	while (end_simulation(args) == 0)
+	while (!end_simulation(args))
 	{
 		i = -1;
-		while (++i < args->philo_number && is_dead(args) == 0)
+		while (++i < args->philo_number && !is_dead(args))
 		{
 			pthread_mutex_lock(&args->lastmeal_mutex);
 			if (get_time() - args->philo[i].lastmeal > args->time_to_die)
@@ -88,7 +88,6 @@ void	check_death(t_args *args)
 				print_death(args, i);
 			}
 			pthread_mutex_unlock(&args->lastmeal_mutex);
-			usleep(200);
 		}
 		if (is_dead(args))
 			break ;
