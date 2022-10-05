@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 21:22:14 by het-tale          #+#    #+#             */
-/*   Updated: 2022/10/05 10:30:18 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/10/05 20:11:25 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,15 @@ void	init_mutexes(t_args *args)
 {
 	int	i;
 
-	i = 0;
+	i = -1;
 	pthread_mutex_init(&args->msg_mutex, NULL);
 	pthread_mutex_init(&args->end_mutex, NULL);
 	pthread_mutex_init(&args->eat_mutex, NULL);
 	pthread_mutex_init(&args->death_mutex, NULL);
 	pthread_mutex_init(&args->lastmeal_mutex, NULL);
-	args->fork = malloc(sizeof(t_fork) * args->philo_number);
-	while (i < args->philo_number)
-	{
-		pthread_mutex_init(&args->fork[i].used_mutex, NULL);
-		args->fork[i].used = 0;
-		i++;
-	}
+	args->fork = malloc(sizeof(pthread_mutex_t) * args->philo_number);
+	while (++i < args->philo_number)
+		pthread_mutex_init(&args->fork[i], NULL);
 }
 
 t_args	*init_args(int argc, char *argv[])
@@ -79,13 +75,8 @@ void	destroy_mutexes(t_args *args)
 	pthread_mutex_destroy(&args->eat_mutex);
 	pthread_mutex_destroy(&args->death_mutex);
 	pthread_mutex_destroy(&args->lastmeal_mutex);
-	args->fork = malloc(sizeof(t_fork) * args->philo_number);
-	while (i < args->philo_number)
-	{
-		pthread_mutex_destroy(&args->fork[i].used_mutex);
-		args->fork[i].used = 0;
-		i++;
-	}
+	while (++i < args->philo_number)
+		pthread_mutex_destroy(&args->fork[i]);
 }
 
 int	main(int argc, char *argv[])
@@ -98,13 +89,14 @@ int	main(int argc, char *argv[])
 		args = init_args(argc, argv);
 		if (!args)
 			return (EXIT_FAILURE);
-		if (args->philo_number == 1)
-			single_philo(args);
-		else
-		{
+		// if (args->philo_number == 1)
+		// 	single_philo(args);
+		// else
+		// {
 			start_simulation(args);
-			check_death(args);
-		}
+			if (check_death(args))
+				return (EXIT_SUCCESS);
+		// }
 		join_threads(args);
 		destroy_mutexes(args);
 	}

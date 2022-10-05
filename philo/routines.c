@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 14:25:03 by het-tale          #+#    #+#             */
-/*   Updated: 2022/10/05 10:13:17 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/10/05 20:23:39 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,20 +57,20 @@ this function updates lastmeal and times each philo ate
 
 void	eat_routine(t_philo *philo)
 {
-	while (!pick_fork(philo, &philo->args->fork[philo->left_i]))
-		usleep(100);
-	while (!pick_fork(philo, &philo->args->fork[philo->right_i]))
-		usleep(100);
+	pthread_mutex_lock(&philo->args->fork[philo->left_i]);
+	print_msg("has taken a fork", philo);
+	pthread_mutex_lock(&philo->args->fork[philo->right_i]);
+	print_msg("has taken a fork", philo);
 	pthread_mutex_lock(&philo->args->lastmeal_mutex);
-	print_msg("is eating", philo);
 	philo->lastmeal = get_time();
+	print_msg("is eating", philo);
 	pthread_mutex_unlock(&philo->args->lastmeal_mutex);
 	sleep_philo(philo->args->time_to_eat, philo->args);
 	pthread_mutex_lock(&philo->args->eat_mutex);
 	philo->ate_times++;
 	pthread_mutex_unlock(&philo->args->eat_mutex);
-	put_fork_down(&philo->args->fork[philo->left_i]);
-	put_fork_down(&philo->args->fork[philo->right_i]);
+	pthread_mutex_unlock(&philo->args->fork[philo->left_i]);
+	pthread_mutex_unlock(&philo->args->fork[philo->right_i]);
 }
 /*routine of each philosopher the philosophers eat, sleep and think while 
 a philo is not dead or the simulation has not ended yet (each philo ate
@@ -83,8 +83,8 @@ void	*start(void *data)
 
 	philo = (t_philo *)data;
 	if (philo->philo_id % 2 == 0)
-		usleep(1000);
-	while (!is_dead(philo->args))
+		usleep(100);
+	while (1)
 	{
 		eat_routine(philo);
 		if (end_simulation(philo->args))

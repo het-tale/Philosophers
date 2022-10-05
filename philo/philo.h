@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 20:50:21 by het-tale          #+#    #+#             */
-/*   Updated: 2022/10/05 10:26:24 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/10/05 20:10:52 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ struct s_args
 	pthread_mutex_t	end_mutex;
 	pthread_mutex_t	lastmeal_mutex;
 	t_philo			*philo;
-	t_fork			*fork;
+	pthread_mutex_t	*fork;
 };
 
 struct s_philo
@@ -70,8 +70,8 @@ void			ft_putstr_fd(int fd, char *str);
 //philo_utils.c
 unsigned int	get_time(void);
 void			sleep_philo(unsigned int time_to, t_args *args);
-void			check_death(t_args *args);
-void			print_death(t_args *args, int i);
+int				check_death(t_args *args);
+int				print_death(t_args *args, int i);
 //routines.c
 void			*start(void *data);
 void			eat_routine(t_philo *philo);

@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 17:00:37 by het-tale          #+#    #+#             */
-/*   Updated: 2022/10/05 10:12:52 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/10/05 20:16:02 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,13 @@ void	sleep_philo(unsigned int time_to, t_args *args)
 {
 	unsigned int	awake;
 
+	(void)args;
 	awake = get_time();
 	while (get_time() < awake + time_to)
 	{
-		if (is_dead(args) || end_simulation(args))
-			break ;
-		usleep(100);
+		// if (is_dead(args) || end_simulation(args))
+		// 	break ;
+		usleep(200);
 	}
 }
 /*
@@ -53,7 +54,7 @@ void	is_max_ate(t_args *args)
 	}
 }
 
-void	print_death(t_args *args, int i)
+int	print_death(t_args *args, int i)
 {
 	unsigned int	time;
 
@@ -61,6 +62,7 @@ void	print_death(t_args *args, int i)
 	time = get_time() - args->start_time - 1;
 	printf("%u %d %s\n", time, args->philo[i].philo_id, "died");
 	pthread_mutex_unlock(&args->msg_mutex);
+	return (1);
 }
 
 /*
@@ -70,9 +72,10 @@ if so update the death variable and print death.
 *check if all philos have eaten number_of_times times;
 */
 
-void	check_death(t_args *args)
+int	check_death(t_args *args)
 {
 	int	i;
+	int	d;
 
 	while (!end_simulation(args))
 	{
@@ -85,7 +88,7 @@ void	check_death(t_args *args)
 				pthread_mutex_lock(&args->death_mutex);
 				args->died = 1;
 				pthread_mutex_unlock(&args->death_mutex);
-				print_death(args, i);
+				d = print_death(args, i);
 			}
 			pthread_mutex_unlock(&args->lastmeal_mutex);
 		}
@@ -93,4 +96,5 @@ void	check_death(t_args *args)
 			break ;
 		is_max_ate(args);
 	}
+	return (d);
 }
