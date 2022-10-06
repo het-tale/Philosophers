@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 17:00:37 by het-tale          #+#    #+#             */
-/*   Updated: 2022/10/06 20:47:36 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/10/06 21:58:16 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ int	check_death(t_args *args)
 		if (is_dead(args))
 			break ;
 		is_max_ate(args);
+		usleep(20);
 	}
 	return (d);
 }
