@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 21:22:14 by het-tale          #+#    #+#             */
-/*   Updated: 2022/10/05 20:11:25 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/10/06 12:24:35 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,14 +89,9 @@ int	main(int argc, char *argv[])
 		args = init_args(argc, argv);
 		if (!args)
 			return (EXIT_FAILURE);
-		// if (args->philo_number == 1)
-		// 	single_philo(args);
-		// else
-		// {
-			start_simulation(args);
-			if (check_death(args))
-				return (EXIT_SUCCESS);
-		// }
+		start_simulation(args);
+		if (check_death(args))
+			return (EXIT_SUCCESS);
 		join_threads(args);
 		destroy_mutexes(args);
 	}

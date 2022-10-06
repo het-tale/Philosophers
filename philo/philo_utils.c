@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 17:00:37 by het-tale          #+#    #+#             */
-/*   Updated: 2022/10/05 20:35:05 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/10/06 12:25:08 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,7 @@ void	sleep_philo(unsigned int time_to, t_args *args)
 	(void)args;
 	awake = get_time();
 	while (get_time() < awake + time_to)
-	{
-		// if (is_dead(args) || end_simulation(args))
-		// 	break ;
 		usleep(100);
-	}
 }
 /*
 check if all the philosophers ate at least number_of_times time

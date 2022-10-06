@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 21:22:14 by het-tale          #+#    #+#             */
-/*   Updated: 2022/10/06 12:13:44 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/10/06 12:23:20 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ t_args	*init_args(int argc, char *argv[])
 	else
 		args->number_of_times = -1;
 	if (!check_errors(*args, argc))
-			return (NULL);
+		return (NULL);
 	args->pids = malloc(sizeof(pid_t) * args->philo_number);
 	init_global_sem(args);
 	return (args);
