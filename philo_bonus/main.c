@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 21:22:14 by het-tale          #+#    #+#             */
-/*   Updated: 2022/10/05 22:16:53 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/10/06 12:13:44 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,15 +55,18 @@ void	wait_children(t_args *args)
 	int	i;
 	int	status;
 
-	waitpid(-1, &status, 0);
-	if (WIFEXITED(status))
+	i = 0;
+	while (i < args->philo_number)
 	{
+		waitpid(-1, &status, 0);
 		if (WEXITSTATUS(status) == DEAD)
 		{
 			i = -1;
 			while (++i < args->philo_number)
 				kill(args->pids[i], SIGKILL);
+			break ;
 		}
+		i++;
 	}
 }
 

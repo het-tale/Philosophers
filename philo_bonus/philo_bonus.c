@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 20:49:46 by het-tale          #+#    #+#             */
-/*   Updated: 2022/10/05 21:41:38 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/10/06 12:16:12 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,6 @@ void	*check_death(void *data)
 			exit(DEAD);
 		}
 		sem_post(philo->args->sem_lastmeal);
-		usleep(200);
 		if (is_dead(philo->args))
 			break ;
 		if (philo->args->number_of_times != -1
