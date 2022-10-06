@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 14:25:03 by het-tale          #+#    #+#             */
-/*   Updated: 2022/10/05 20:23:39 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/10/06 20:43:27 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,30 +25,6 @@ void	print_msg(char *str, t_philo *philo)
 	pthread_mutex_unlock(&philo->args->msg_mutex);
 }
 
-void	put_fork_down(t_fork *fork)
-{
-	pthread_mutex_lock(&fork->used_mutex);
-	fork->used = 0;
-	pthread_mutex_unlock(&fork->used_mutex);
-}
-
-int	pick_fork(t_philo *philo, t_fork *fork)
-{
-	pthread_mutex_lock(&fork->used_mutex);
-	if (!fork->used)
-	{
-		print_msg("has taken a fork", philo);
-		fork->used = philo->philo_id;
-	}
-	if (fork->used == philo->philo_id)
-	{
-		pthread_mutex_unlock(&fork->used_mutex);
-		return (1);
-	}
-	pthread_mutex_unlock(&fork->used_mutex);
-	return (0);
-}
-
 /*
 a philosopher can only pick a fork if it's available if not the philosopher 
 should wait until the fork is available
@@ -65,7 +41,7 @@ void	eat_routine(t_philo *philo)
 	philo->lastmeal = get_time();
 	print_msg("is eating", philo);
 	pthread_mutex_unlock(&philo->args->lastmeal_mutex);
-	sleep_philo(philo->args->time_to_eat, philo->args);
+	sleep_philo(philo->args->time_to_eat);
 	pthread_mutex_lock(&philo->args->eat_mutex);
 	philo->ate_times++;
 	pthread_mutex_unlock(&philo->args->eat_mutex);
@@ -90,7 +66,7 @@ void	*start(void *data)
 		if (end_simulation(philo->args))
 			break ;
 		print_msg("is sleeping", philo);
-		sleep_philo(philo->args->time_to_sleep, philo->args);
+		sleep_philo(philo->args->time_to_sleep);
 		print_msg("is thinking", philo);
 	}
 	return (NULL);

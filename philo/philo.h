@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 20:50:21 by het-tale          #+#    #+#             */
-/*   Updated: 2022/10/05 20:10:52 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/10/06 20:37:55 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,6 @@
 
 typedef struct s_args	t_args;
 typedef struct s_philo	t_philo;
-typedef struct s_fork	t_fork;
-
-struct s_fork
-{
-	pthread_mutex_t		used_mutex;
-	int					used;
-};
 
 struct s_args
 {
@@ -69,19 +62,15 @@ int				is_all_ate(t_philo *philo);
 void			ft_putstr_fd(int fd, char *str);
 //philo_utils.c
 unsigned int	get_time(void);
-void			sleep_philo(unsigned int time_to, t_args *args);
+void			sleep_philo(unsigned int time_to);
 int				check_death(t_args *args);
 int				print_death(t_args *args, int i);
 //routines.c
 void			*start(void *data);
 void			eat_routine(t_philo *philo);
-int				pick_fork(t_philo *philo, t_fork *fork);
-void			put_fork_down(t_fork *fork);
 void			print_msg(char *str, t_philo *philo);
 //philo.c
 void			start_simulation(t_args *args);
-void			*one_philo(void *data);
-void			single_philo(t_args *args);
 void			join_threads(t_args *args);
 void			init_philo(t_args *args);
 //main.c

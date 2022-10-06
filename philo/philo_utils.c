@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 17:00:37 by het-tale          #+#    #+#             */
-/*   Updated: 2022/10/06 12:25:08 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/10/06 20:47:36 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,10 @@ unsigned int	get_time(void)
 	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
 }
 
-void	sleep_philo(unsigned int time_to, t_args *args)
+void	sleep_philo(unsigned int time_to)
 {
 	unsigned int	awake;
 
-	(void)args;
 	awake = get_time();
 	while (get_time() < awake + time_to)
 		usleep(100);
@@ -73,6 +72,7 @@ int	check_death(t_args *args)
 	int	i;
 	int	d;
 
+	d = 0;
 	while (!end_simulation(args))
 	{
 		i = -1;

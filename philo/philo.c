@@ -6,7 +6,7 @@
 /*   By: het-tale <het-tale@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 20:49:46 by het-tale          #+#    #+#             */
-/*   Updated: 2022/10/05 20:54:07 by het-tale         ###   ########.fr       */
+/*   Updated: 2022/10/06 21:00:22 by het-tale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,8 @@ void	start_simulation(t_args *args)
 	while (i < args->philo_number)
 	{
 		args->philo[i].lastmeal = args->start_time;
-		pthread_create(&args->philo[i].tid, NULL, &start, &args->philo[i]);
+		if (pthread_create(&args->philo[i].tid, NULL, &start, &args->philo[i]))
+			ft_putstr_fd(2, "Failed to create Thread\n");
 		i++;
 	}
 }
@@ -51,25 +52,8 @@ void	join_threads(t_args *args)
 
 	i = -1;
 	while (++i < args->philo_number)
-		pthread_join(args->philo[i].tid, NULL);
+		if (pthread_join(args->philo[i].tid, NULL))
+			ft_putstr_fd(2, "Failed to Join Thread\n");
 	free(args->fork);
 	free(args->philo);
-}
-
-void	single_philo(t_args *args)
-{
-	init_philo(args);
-	args->start_time = get_time();
-	pthread_create(&args->philo[0].tid, NULL, &one_philo, &args->philo[0]);
-}
-
-void	*one_philo(void *data)
-{
-	t_philo	*philo;
-
-	philo = (t_philo *)data;
-	print_msg("has taken a fork", philo);
-	sleep_philo(philo->args->time_to_die, philo->args);
-	print_death(philo->args, 0);
-	return (NULL);
 }
